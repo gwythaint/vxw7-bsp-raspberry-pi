@@ -1,4 +1,4 @@
-VxWorks® 7 Raspberry Pi 3B/3B+ unsupported BSP
+VxWorks® 7 Raspberry Pi 3B/3B+ Community BSP
 ===
 ---
 
@@ -41,7 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
 # Prerequisite(s)
 
 * You must have Wind River® VxWorks® 7 SR0620 released source code and
-  development environment to support "Raspberry Pi 3B/B+ unsupported BSP".
+  development environment to support "Raspberry Pi 3B/B+ Community BSP".
 
 # Building and Using
 
@@ -171,3 +171,5 @@ without limitation, any warranties of TITLE, NONINFRINGEMENT, MERCHANTABILITY, o
 PURPOSE. You are solely responsible for determining the appropriateness of using or redistributing the 
 software and assume ay risks associated with your exercise of permissions under the license.
 
+This BSP is not covered by Wind River's standard support. Should you need support, please work with 
+the community, or should you need commercial support, please contact your local Wind River Sales Representative.
