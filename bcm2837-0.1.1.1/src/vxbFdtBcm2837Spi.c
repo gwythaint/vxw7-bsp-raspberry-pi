@@ -33,6 +33,7 @@
 /*
 modification history
 --------------------
+10oct19,zxw  fixed a data abort issue (V7PRO-5768)
 08mar19,zxw  created (F11409)
 */
 
@@ -195,6 +196,7 @@ typedef struct bcm2837_spi_drv_ctrl
     void *          pinmuxHandle;
     UINT32          clkFrequency;
     UINT8 *         txBuf;
+    UINT8 *         txBufEnd;
     UINT32          txLen;
     UINT8 *         rxBuf;
     UINT32          rxLen;
@@ -217,8 +219,7 @@ LOCAL STATUS bcm2837SpiTransfer (VXB_DEV_ID pDev,
                                  SPI_HARDWARE * devInfo,
                                  SPI_TRANSFER * pPkg);
 LOCAL STATUS bcm2837SpiTransferStart (VXB_DEV_ID pDev,
-                                      SPI_HARDWARE * devInfo,
-                                      SPI_TRANSFER * pPkg);
+                                      SPI_HARDWARE * devInfo);
 LOCAL STATUS bcm2837TransferDone (BCM2837_SPI_DRVCTRL * pDrvCtrl);
 LOCAL void   bcm2837WriteFifo     (BCM2837_SPI_DRVCTRL * pDrvCtrl);
 LOCAL void   bcm2837ReadFifo     (BCM2837_SPI_DRVCTRL * pDrvCtrl);
@@ -765,7 +766,15 @@ LOCAL void bcm2837WriteFifoFree
 
     while (count--)
         {
-        sendByte = (pDrvCtrl->txBuf == NULL) ? 0 : *pDrvCtrl->txBuf++;
+        if ((pDrvCtrl->txBufEnd != pDrvCtrl->txBuf) &&
+            (pDrvCtrl->txBuf != NULL))
+            {
+            sendByte = *pDrvCtrl->txBuf++;
+            }
+        else
+            {
+            sendByte = 0;
+            }
         pDrvCtrl->txLen--;
         CSR_WRITE_4 (pDrvCtrl, BCM2837_SPI_FIFO, (UINT32) sendByte);
         }
@@ -828,7 +837,15 @@ LOCAL void bcm2837WriteFifo
     while ((pDrvCtrl->txLen > 0) &&
             ((CSR_READ_4 (pDrvCtrl, BCM2837_SPI_CS) & BCM2837_SPI_CS_TXD) != 0))
         {
-        sendByte = (pDrvCtrl->txBuf == NULL) ? 0 : *pDrvCtrl->txBuf++;
+        if ((pDrvCtrl->txBufEnd != pDrvCtrl->txBuf) &&
+            (pDrvCtrl->txBuf != NULL))
+            {
+            sendByte = *pDrvCtrl->txBuf++;
+            }
+        else
+            {
+            sendByte = 0;
+            }
         pDrvCtrl->txLen--;
         CSR_WRITE_4 (pDrvCtrl, BCM2837_SPI_FIFO, (UINT32) sendByte);
         }
@@ -874,8 +891,7 @@ LOCAL STATUS bcm2837TransferDone
 LOCAL STATUS bcm2837SpiTransferStart
     (
     VXB_DEV_ID      pDev,
-    SPI_HARDWARE *  devInfo,
-    SPI_TRANSFER *  pPkg
+    SPI_HARDWARE *  devInfo
     )
     {
     BCM2837_SPI_DRVCTRL *   pDrvCtrl;
@@ -952,11 +968,7 @@ LOCAL STATUS bcm2837SpiTransferStart
         bcm2837SpiReset (pDrvCtrl);
         }
 
-        if (pPkg->usDelay > 0)
-        {
-        vxbUsDelay ((int) pPkg->usDelay);
-        }
-        return OK;
+    return OK;
 
 transError:
     bcm2837SpiReset (pDrvCtrl);
@@ -1018,8 +1030,9 @@ LOCAL STATUS bcm2837SpiTransfer
         {
         pDrvCtrl->txBuf  = pPkg->txBuf;
         }
-    pDrvCtrl->rxBuf  = pPkg->rxBuf;
-    pDrvCtrl->rxLen  = pPkg->rxLen;
+    pDrvCtrl->rxBuf     = pPkg->rxBuf;
+    pDrvCtrl->rxLen     = pPkg->rxLen;
+    pDrvCtrl->txBufEnd  = pDrvCtrl->txBuf + pPkg->txLen;
 
-    return bcm2837SpiTransferStart (pDev, devInfo, pPkg);
+    return bcm2837SpiTransferStart (pDev, devInfo);
     }

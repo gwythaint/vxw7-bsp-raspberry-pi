@@ -33,6 +33,7 @@
 /*
 Modification history
 --------------------
+10oct19,zxw  version 0.1.1.1, fixed data abort issue in SPI driver (V7PRO-5768)
 01may19,mze  LAYER name changes
 24apr19,mpc  added CORTEX series CPU type definitions (F11131)
 22apr19,zxw  version 0.1.0.1, removed ISR pointer check in interrupt config
@@ -44,7 +45,7 @@ Layer BCM2837
     SYNOPSIS         (Unsupported) BCM2837 processor support libraries
     HELP             (Unsupported) This provides the BCM2837 processor \
                      support libraries (PSL).
-    VERSION          0.1.1.0
+    VERSION          0.1.1.1
     VENDOR           Wind River
     FEATURE          PSL
     VSB_REQUIRES     CPU_ARMARCH8A || CPU_CORE_ARMARCH8A
