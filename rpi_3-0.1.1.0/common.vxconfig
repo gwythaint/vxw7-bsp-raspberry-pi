@@ -41,8 +41,6 @@
 
 # HIDDEN: This option is not exposed
 
-config BSP_CONFIG
+config  ARMV7_CORE_CTX_A8_BSP
         bool
-        depends on ARM
-        select HAS_CTX_A53
         default y

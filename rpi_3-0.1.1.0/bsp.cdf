@@ -44,7 +44,7 @@ Bsp rpi_3 {
     BUILD_TARGETS       uVxWorks vxWorks vxWorks.bin
     ENDIAN              little
     DATA_MODEL          LP64
-    FP                  hard
+    FP                  vector soft
     REQUIRES            INCLUDE_KERNEL                  \
                         INCLUDE_CPU_INIT                \
                         INCLUDE_MEM_DESC                \

@@ -39,7 +39,7 @@ LOAD_ADDR                   = 0x00000000
 LD_LOCAL_MEM_PHYS_ADRS_MASK = 0x00000000ffffffff
 
 MKIMAGE_FLAGS = -A arm64
-
+EXTRACT_BIN_FLAG = -O binary
 # build binary target
 
 vxWorks.bin:    vxWorks
